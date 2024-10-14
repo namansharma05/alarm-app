@@ -18,15 +18,26 @@ class HourHandPainter extends CustomPainter {
     canvas.save();
 
     // canvas.translate(radius, radius);
+    // canvas.transform(matrix4)
 
     Paint hourLinePint = Paint()
       ..color = Colors.black
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.round;
 
+    // Offset hrsEndOffset = Offset(
+    //     centerX - radius * 0.4 * math.cos(hours! * 6 * math.pi / 180),
+    //     centerY - radius * 0.4 * math.sin(hours! * 6 * math.pi / 180));
+
     Offset hrsEndOffset = Offset(
-        centerX - radius * 0.4 * math.cos(hours! * 6 * math.pi / 180),
-        centerY - radius * 0.4 * math.sin(hours! * 6 * math.pi / 180));
+        centerX +
+            radius *
+                .6 *
+                math.cos((hours! * 30 + minutes! * 0.5 - 90) * math.pi / 180),
+        centerY +
+            radius *
+                .6 *
+                math.sin((hours! * 30 + minutes! * 0.5 - 90) * math.pi / 180));
 
     //checks if hour is greater than 12 before calculating rotation
     // canvas.rotate(hours! >= 12

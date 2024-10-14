@@ -24,19 +24,16 @@ class MinuteHandPainter extends CustomPainter {
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.round;
 
-    // Path path = new Path();
-    // path.moveTo(-1.5, -radius - 10.0);
-    // path.lineTo(-5.0, -radius / 1.8);
-    // path.lineTo(-2.0, 10.0);
-    // path.lineTo(2.0, 10.0);
-    // path.lineTo(5.0, -radius / 1.8);
-    // path.lineTo(1.5, -radius - 10.0);
-    // path.close();
     Offset minEndOffset = Offset(
-        centerX - radius * 0.6 * math.cos(minutes! * 6 * math.pi / 180),
-        centerY - radius * 0.6 * math.sin(minutes! * 6 * math.pi / 180));
+        centerX +
+            radius *
+                .8 *
+                math.cos((minutes! * 6 + seconds! * 0.1 - 90) * math.pi / 180),
+        centerY +
+            radius *
+                .8 *
+                math.sin((minutes! * 6 + seconds! * 0.1 - 90) * math.pi / 180));
 
-    // canvas.rotate(2 * math.pi * ((minutes! + (seconds! / 60)) / 60));
     canvas.drawLine(center, minEndOffset, minuteLinePaint);
     // canvas.drawPath(path, minuteHandPaint);
 

@@ -22,8 +22,8 @@ class SecondHandPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     Offset secEndOffset = Offset(
-        centerX - radius * math.cos(seconds! * 6 * math.pi / 180),
-        centerY - radius * math.sin(seconds! * 6 * math.pi / 180));
+        centerX + radius * math.cos((seconds! * 6 - 90) * math.pi / 180),
+        centerY + radius * math.sin((seconds! * 6 - 90) * math.pi / 180));
 
     // canvas.translate(centerX, centerX);
 
