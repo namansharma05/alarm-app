@@ -29,8 +29,8 @@ class MainActivity: FlutterActivity() {
                 }
                 "setAlarm" -> {
                     val alarmTime: Int? = call.argument<Int>("alarmTime") ?: 0 // Expecting the time as Int (e.g., hour or timestamp)
-                    setAlarm(alarmTime!!)
-                    result.success("Alarm set successfully for time: $alarmTime")
+                    val time = setAlarm(alarmTime!!)
+                    result.success("Alarm set successfully for time: $time")
                 }
                 else -> {
                     result.notImplemented()
@@ -44,23 +44,26 @@ class MainActivity: FlutterActivity() {
         return formatter.format(Instant.now())
     }
 
-    private fun setAlarm(alarmTime: Int) {
+    private fun setAlarm(alarmTime: Int): String {
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
+        calendar[Calendar.HOUR_OF_DAY] = alarmTime
+        calendar[Calendar.MINUTE] = 10
+        calendar[Calendar.SECOND] = 0
+        calendar[Calendar.MILLISECOND] = 0
+        
         alarmMgr = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AlarmReceiver::class.java)
         alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val calendar: Calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, alarmTime)
-            set(Calendar.MINUTE, 55) // Set to the top of the hour
-            set(Calendar.SECOND, 0)
-        }
 
-        alarmMgr?.setInexactRepeating (
+        println("current system time: "+System.currentTimeMillis())
+
+        alarmMgr?.setExact (
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
             alarmIntent
         )
-        println("New Alarm set for: $alarmTime")
+        println("alarm time: "+calendar.timeInMillis)
+        return calendar[Calendar.HOUR_OF_DAY].toString()+":"+calendar[Calendar.MINUTE].toString()
     }
 }

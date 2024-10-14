@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:alarm_app/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: const HomePage(),
     );
   }
 }
@@ -36,7 +37,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   DateTime? currentTime;
   Timer? timer;
-  final alarmTime = 23;
+  final alarmTime = 15;
   getCurrentTime() async {
     try {
       final result = await MyHomePage.platform.invokeMethod('getCurrentTime');
