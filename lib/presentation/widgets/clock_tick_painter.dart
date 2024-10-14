@@ -26,7 +26,7 @@ class ClockDialPainter extends CustomPainter {
           fontFamily: 'Times New Roman',
           fontSize: 15.0,
         ) {
-    tickPaint.color = Colors.grey[300]!;
+    tickPaint.color = Colors.black54!;
   }
 
   @override

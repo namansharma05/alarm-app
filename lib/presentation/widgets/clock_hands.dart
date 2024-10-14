@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:alarm_app/presentation/widgets/clock_tick_painter.dart';
 import 'package:alarm_app/presentation/widgets/hand_hour.dart';
 import 'package:alarm_app/presentation/widgets/hand_minute.dart';
 import 'package:alarm_app/presentation/widgets/hand_second.dart';
@@ -43,6 +44,9 @@ class _ClockHandState extends State<ClockHands> {
       child: new Stack(
         fit: StackFit.expand,
         children: [
+          CustomPaint(
+            painter: ClockDialPainter(clockText: ClockText.roman),
+          ),
           new CustomPaint(
             painter: new SecondHandPainter(
               seconds: dateTime.second,

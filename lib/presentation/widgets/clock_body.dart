@@ -14,18 +14,15 @@ class ClockBody extends StatelessWidget {
         height: 300,
         width: 300,
         decoration: BoxDecoration(
-            color: Colors.white,
+            gradient: RadialGradient(
+              colors: [Colors.white, Colors.white, Colors.white, Colors.black],
+              radius: 0.6,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black38,
-                blurRadius: 100,
-                spreadRadius: -40,
-              ),
-              BoxShadow(
-                color: Colors.black38,
-                blurRadius: 100,
-                spreadRadius: -40,
-                offset: Offset(-10, -10),
+                color: Colors.black,
+                blurRadius: 50,
+                spreadRadius: -5,
               ),
             ],
             borderRadius: BorderRadius.circular(150)),
@@ -42,12 +39,15 @@ class ClockBody extends StatelessWidget {
               // ),
             ),
             //centerpoint
+            // CustomPaint(
+            //   painter: ClockDialPainter(clockText: ClockText.roman),
+            // ),
             new Center(
               child: new Container(
-                width: 15.0,
-                height: 15.0,
+                width: 10.0,
+                height: 10.0,
                 decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(100),
                   color: Colors.black,
                 ),
                 // child: ClockHands(),
