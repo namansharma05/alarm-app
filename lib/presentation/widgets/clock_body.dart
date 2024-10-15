@@ -1,5 +1,4 @@
 import 'package:alarm_app/presentation/widgets/clock_hands.dart';
-import 'package:alarm_app/presentation/widgets/clock_tick_painter.dart';
 import 'package:flutter/material.dart';
 
 class ClockBody extends StatelessWidget {
@@ -14,15 +13,23 @@ class ClockBody extends StatelessWidget {
         height: 300,
         width: 300,
         decoration: BoxDecoration(
-            gradient: RadialGradient(
-              colors: [Colors.white, Colors.white, Colors.white, Colors.black],
-              radius: 0.6,
+            gradient: LinearGradient(
+              colors: [
+                Colors.white,
+                Colors.white,
+                Colors.grey,
+                Colors.black12,
+              ],
+              begin: Alignment.bottomRight,
+              end: Alignment.topLeft,
             ),
+            color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.black,
-                blurRadius: 50,
-                spreadRadius: -5,
+                color: Colors.black26,
+                blurRadius: 15,
+                spreadRadius: 5,
+                offset: Offset(10.0, 10.0),
               ),
             ],
             borderRadius: BorderRadius.circular(150)),

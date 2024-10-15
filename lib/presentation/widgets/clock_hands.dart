@@ -45,7 +45,7 @@ class _ClockHandState extends State<ClockHands> {
         fit: StackFit.expand,
         children: [
           CustomPaint(
-            painter: ClockDialPainter(clockText: ClockText.roman),
+            painter: ClockDialPainter(),
           ),
           new CustomPaint(
             painter: new SecondHandPainter(

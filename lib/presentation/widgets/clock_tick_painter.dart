@@ -3,8 +3,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class ClockDialPainter extends CustomPainter {
-  final clockText;
-
   final hourTickMarkLength = 3.0;
   final minuteTickMarkLength = 0.0;
 
@@ -15,7 +13,7 @@ class ClockDialPainter extends CustomPainter {
   final TextPainter textPainter;
   final TextStyle textStyle;
 
-  ClockDialPainter({this.clockText = ClockText.roman})
+  ClockDialPainter()
       : tickPaint = new Paint(),
         textPainter = new TextPainter(
           textAlign: TextAlign.center,
@@ -26,7 +24,7 @@ class ClockDialPainter extends CustomPainter {
           fontFamily: 'Times New Roman',
           fontSize: 15.0,
         ) {
-    tickPaint.color = Colors.black54!;
+    tickPaint.color = Colors.black54;
   }
 
   @override
@@ -43,7 +41,7 @@ class ClockDialPainter extends CustomPainter {
       tickMarkLength = i % 5 == 0 ? hourTickMarkLength : minuteTickMarkLength;
       tickPaint.strokeWidth =
           i % 5 == 0 ? hourTickMarkWidth : minuteTickMarkWidth;
-      canvas.drawCircle(new Offset(0.0, -radius), tickMarkLength, tickPaint);
+      canvas.drawCircle(Offset(0.0, -radius), tickMarkLength, tickPaint);
 
       canvas.rotate(angle);
     }

@@ -31,20 +31,23 @@ class _DigitalClockState extends State<DigitalClock> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "${dateTime.hour}:",
+            "0${dateTime.hour % 12}:",
             style: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 70),
           ),
-          Text("${dateTime.minute}:",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 70)),
-          Text("${dateTime.second}",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 70)),
+          Text(
+            dateTime.minute < 10 ? "0${dateTime.minute}" : "${dateTime.minute}",
+            style: TextStyle(
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 70),
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          Text(
+            dateTime.hour < 12 ? "AM" : "PM",
+            style: TextStyle(
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 70),
+          ),
         ],
       ),
     );

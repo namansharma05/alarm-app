@@ -18,7 +18,7 @@ class SecondHandPainter extends CustomPainter {
 
     Paint secondHandPaint = Paint()
       ..color = Colors.red
-      ..strokeWidth = 4
+      ..strokeWidth = 1
       ..strokeCap = StrokeCap.round;
 
     Offset secEndOffset = Offset(
