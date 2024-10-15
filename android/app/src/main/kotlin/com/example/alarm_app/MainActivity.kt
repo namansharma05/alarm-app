@@ -19,18 +19,29 @@ class MainActivity: FlutterActivity() {
     private var alarmMgr: AlarmManager? = null
     private lateinit var alarmIntent: PendingIntent
 
+    data class Alarm(
+        val hour: Int,
+        val minute: Int,
+        val meridiem: String,
+        val status: Boolean
+    )
+
+
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
-                "getCurrentTime" -> {
-                    val currentTime = getCurrentTime()
-                    result.success(currentTime)
-                }
                 "setAlarm" -> {
-                    val alarmTime: Int? = call.argument<Int>("alarmTime") ?: 0 // Expecting the time as Int (e.g., hour or timestamp)
-                    val time = setAlarm(alarmTime!!)
-                    result.success("Alarm set successfully for time: $time")
+                    val alarmMap = call.arguments as? Map<String, Any?>
+                    if (alarmMap != null) {
+                        val alarm = mapToAlarm(alarmMap)
+                        // Now you can use the User object
+                        val time = setAlarm(alarm)
+                        result.success("Alarm set successfully for time: $time")
+                    } else {
+                        result.error("INVALID_ARGUMENT", "Expected map argument", null)
+                    }
+                    
                 }
                 else -> {
                     result.notImplemented()
@@ -39,16 +50,20 @@ class MainActivity: FlutterActivity() {
         }
     }
 
-    private fun getCurrentTime(): String {
-        val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(java.time.ZoneId.systemDefault())
-        return formatter.format(Instant.now())
+    private fun mapToAlarm(map: Map<String, Any?>): Alarm {
+        return Alarm(
+            hour = map["hour"] as Int,
+            minute = map["minute"] as Int,
+            meridiem = map["meridiem"] as String,
+            status = map["status"] as Boolean
+        )
     }
 
-    private fun setAlarm(alarmTime: Int): String {
+    private fun setAlarm(alarm: Alarm): String {
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
-        calendar[Calendar.HOUR_OF_DAY] = alarmTime
-        calendar[Calendar.MINUTE] = 10
+        calendar[Calendar.HOUR_OF_DAY] = if(alarm.meridiem == "AM") alarm.hour else alarm.hour + 12
+        calendar[Calendar.MINUTE] = alarm.minute
         calendar[Calendar.SECOND] = 0
         calendar[Calendar.MILLISECOND] = 0
         
@@ -56,14 +71,14 @@ class MainActivity: FlutterActivity() {
         val intent = Intent(this, AlarmReceiver::class.java)
         alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
-        println("current system time: "+System.currentTimeMillis())
+        // println("current system time: "+System.currentTimeMillis())
 
         alarmMgr?.setExact (
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
             alarmIntent
         )
-        println("alarm time: "+calendar.timeInMillis)
+        // println("alarm time: "+calendar.timeInMillis)
         return calendar[Calendar.HOUR_OF_DAY].toString()+":"+calendar[Calendar.MINUTE].toString()
     }
 }

@@ -17,7 +17,10 @@ class ClockBody extends StatelessWidget {
               colors: [
                 Colors.white,
                 Colors.white,
-                Colors.grey,
+                Colors.white,
+                Colors.grey.shade200,
+                Colors.grey.shade400,
+                Colors.grey.shade600,
                 Colors.black12,
               ],
               begin: Alignment.bottomRight,

@@ -1,8 +1,11 @@
+import 'package:alarm_app/presentation/bloc/alarm_bloc.dart';
+import 'package:alarm_app/presentation/bloc/alarm_state.dart';
 import 'package:alarm_app/presentation/widgets/bottom_bar.dart';
 import 'package:alarm_app/presentation/widgets/clock_body.dart';
 import 'package:alarm_app/presentation/widgets/digital_clock.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,6 +32,48 @@ class _HomePageState extends State<HomePage> {
             height: 30,
           ),
           DigitalClock(),
+          Expanded(
+            child: BlocBuilder<AlarmBloc, AlarmState>(
+              builder: (context, state) {
+                if (state is AlarmLoadingState) {
+                  return const Center(
+                    child: CupertinoActivityIndicator(),
+                  );
+                } else if (state is AlarmLoadedState) {
+                  final alarms = state.alarms; // Handle potential null case
+                  if (alarms == null || alarms.isEmpty) {
+                    return const Center(child: Text("No alarms"));
+                  }
+                  return ListView.builder(
+                    itemCount: state.alarms!.length,
+                    itemBuilder: (context, index) {
+                      final alarm = state.alarms![index];
+                      return ListTile(
+                        title: Text(
+                            "${alarm.hour}:${alarm.minute}  ${alarm.meridiem}"),
+                        trailing: CupertinoSwitch(
+                          value: alarm.status!,
+                          onChanged: (val) {
+                            // setState(() {
+                            //   value = val;
+                            // });
+                          },
+                        ),
+                      );
+                    },
+                  );
+                } else if (state is AlarmErrorState) {
+                  return Center(
+                    child: Text(state.error!),
+                  );
+                } else {
+                  return const Center(
+                    child: Text("No alarms"),
+                  );
+                }
+              },
+            ),
+          ),
           // Expanded(
           //   child: ListView.builder(
           //     itemCount: 4,

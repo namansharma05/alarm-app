@@ -31,7 +31,11 @@ class _DigitalClockState extends State<DigitalClock> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "0${dateTime.hour % 12}:",
+            dateTime.hour == 12
+                ? "${dateTime.hour}:"
+                : dateTime.hour % 12 < 10
+                    ? "0${dateTime.hour % 12}:"
+                    : "${dateTime.hour % 12}:",
             style: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 70),
           ),
