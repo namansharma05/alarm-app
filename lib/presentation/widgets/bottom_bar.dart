@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomBar extends StatefulWidget {
-  BottomBar({super.key});
+  const BottomBar({super.key});
 
   @override
   State<BottomBar> createState() => _BottomBarState();
