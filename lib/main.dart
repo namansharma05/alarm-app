@@ -1,6 +1,7 @@
 import 'package:alarm_app/injection_container.dart';
 import 'package:alarm_app/presentation/bloc/alarm_bloc.dart';
 import 'package:alarm_app/presentation/bloc/alarm_event.dart';
+import 'package:alarm_app/presentation/pages/alarm_screen.dart';
 import 'package:alarm_app/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,7 +29,11 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
         ),
-        home: const HomePage(),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const HomePage(),
+          '/alarm_screen': (context) => const AlarmScreen()
+        },
       ),
     );
   }
