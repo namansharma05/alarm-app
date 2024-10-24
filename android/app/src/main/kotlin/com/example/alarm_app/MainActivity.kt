@@ -13,6 +13,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 
 class MainActivity: FlutterActivity() {
     private val CHANNEL = "com.example/alarm-app"
@@ -26,6 +27,24 @@ class MainActivity: FlutterActivity() {
         val status: Boolean
     )
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        // Check if the activity was launched from the alarm
+        if (intent?.getBooleanExtra("ALARM_TRIGGERED", false) == true) {
+            // Get the Flutter engine
+            flutterEngine?.navigationChannel?.pushRoute("/alarm_screen")
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        
+        // Handle the case when the activity is already running
+        if (intent.getBooleanExtra("ALARM_TRIGGERED", false)) {
+            flutterEngine?.navigationChannel?.pushRoute("/alarm_screen")
+        }
+    }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)

@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Vibrator
 import android.media.MediaPlayer
 import android.util.Log
-import io.flutter.embedding.android.FlutterActivity
 
 class AlarmReceiver : BroadcastReceiver() {
 
@@ -17,24 +16,23 @@ class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("AlarmReceiver", "Alarm triggered, sound playing")
-        // Vibrate phone when the alarm triggers (optional)
+        
+        // Vibrate phone when the alarm triggers
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        vibrator?.vibrate(2000) // Vibrate for 2 seconds
+        vibrator?.vibrate(2000)
 
         // Play custom sound from raw resources
-        mediaPlayer = MediaPlayer.create(context, R.raw.iphone_alarm) // Replace with your sound file
+        mediaPlayer = MediaPlayer.create(context, R.raw.iphone_alarm)
 
         mediaPlayer?.setOnPreparedListener {
             it.start()
 
-            // Set up the OnCompletionListener to restart the sound immediately when it finishes
             it.setOnCompletionListener { mp ->
                 if (playTime < oneMinuteMillis) {
-                    mp.start() // Restart the sound immediately
+                    mp.start()
                 }
             }
 
-            // Track total play time using a Handler and stop after 1 minute
             val handler = Handler()
             handler.postDelayed({
                 mediaPlayer?.let { mp ->
@@ -45,7 +43,6 @@ class AlarmReceiver : BroadcastReceiver() {
                 }
             }, oneMinuteMillis.toLong())
 
-            // Start tracking the playtime
             val soundDuration = it.duration
             val updatePlayTimeHandler = Handler()
             updatePlayTimeHandler.post(object : Runnable {
@@ -58,13 +55,13 @@ class AlarmReceiver : BroadcastReceiver() {
             })
         }
 
-        // Launch Flutter activity when alarm triggers
-        val flutterIntent = FlutterActivity
-            .withNewEngine()
-            .initialRoute("/alarm_screen") // This sets the initial Flutter screen
-            .build(context)
-        context.startActivity(flutterIntent)
-
-        
+        // Launch MainActivity when alarm triggers
+        val mainIntent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra("ALARM_TRIGGERED", true)  // Add a flag to indicate alarm trigger
+            putExtra("route", "/alarm_screen")
+            action = "com.example.alarm_app.ALARM_TRIGGERED"
+        }
+        context.startActivity(mainIntent)
     }
 }
