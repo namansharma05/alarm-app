@@ -1,4 +1,7 @@
+import 'package:alarm_app/presentation/bloc/alarm_bloc.dart';
+import 'package:alarm_app/presentation/bloc/alarm_event.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AlarmScreen extends StatefulWidget {
   const AlarmScreen({super.key});
@@ -8,19 +11,15 @@ class AlarmScreen extends StatefulWidget {
 }
 
 class _AlarmScreenState extends State<AlarmScreen> {
-  bool _isAlarmPlaying = true;
-
   // Method to stop the alarm
-  void _stopAlarm() {
-    setState(() {
-      _isAlarmPlaying = false;
-      // TODO: Stop the alarm sound (communicate with Kotlin if needed)
-    });
+  void _stopAlarm(AlarmBloc alarmBloc) {
+    alarmBloc.add(AlarmStopAlarmEvent());
     Navigator.of(context).pop(); // Close the alarm screen
   }
 
   @override
   Widget build(BuildContext context) {
+    final AlarmBloc alarmBloc = BlocProvider.of<AlarmBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Alarm'),
@@ -36,7 +35,9 @@ class _AlarmScreenState extends State<AlarmScreen> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _isAlarmPlaying ? _stopAlarm : null,
+              onPressed: () {
+                _stopAlarm(alarmBloc);
+              },
               child: Text('Stop Alarm'),
             ),
           ],

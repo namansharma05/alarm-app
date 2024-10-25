@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:alarm_app/domain/usecases/get_alarm.dart';
 import 'package:alarm_app/domain/usecases/set_alarm.dart';
+import 'package:alarm_app/domain/usecases/stop_alarm.dart';
 import 'package:alarm_app/presentation/bloc/alarm_event.dart';
 import 'package:alarm_app/presentation/bloc/alarm_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,9 +10,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
   final SetAlarm? setAlarm;
   final GetAlarm? getAlarm;
-  AlarmBloc({this.getAlarm, this.setAlarm}) : super(AlarmLoadedState()) {
+  final StopAlarm? stopAlarm;
+  AlarmBloc({this.stopAlarm, this.getAlarm, this.setAlarm})
+      : super(AlarmLoadedState()) {
     on<AlarmGetAlarmEvent>(alarmGetAlarmEvent);
     on<AlarmSetAlarmEvent>(alarmSetAlarmEvent);
+    on<AlarmStopAlarmEvent>(alarmStopAlarmEvent);
   }
   FutureOr<void> alarmGetAlarmEvent(
       AlarmGetAlarmEvent event, Emitter<AlarmState> emit) async {
@@ -34,5 +38,10 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
     setAlarm!.call(event.alarmEntity);
     add(AlarmGetAlarmEvent());
     emit(AlarmSetAlarmState());
+  }
+
+  FutureOr<void> alarmStopAlarmEvent(
+      AlarmStopAlarmEvent event, Emitter<AlarmState> emit) {
+    stopAlarm?.call();
   }
 }

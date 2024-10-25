@@ -14,6 +14,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 
 class MainActivity: FlutterActivity() {
     private val CHANNEL = "com.example/alarm-app"
@@ -62,6 +63,10 @@ class MainActivity: FlutterActivity() {
                     }
                     
                 }
+                "stopAlarm" -> {
+                    stopAlarm()
+                    result.success("Alarm stopped successfully");
+                }
                 else -> {
                     result.notImplemented()
                 }
@@ -100,4 +105,20 @@ class MainActivity: FlutterActivity() {
         // println("alarm time: "+calendar.timeInMillis)
         return calendar[Calendar.HOUR_OF_DAY].toString()+":"+calendar[Calendar.MINUTE].toString()
     }
+
+    private fun stopAlarm() {
+        Log.d("MainActivity", "Attempting to stop the alarm")
+       // Stop the alarm using the alarm manager
+        alarmMgr?.cancel(alarmIntent)
+
+        // Stop the media player in AlarmReceiver
+        val intent = Intent(this, AlarmReceiver::class.java).apply {
+            action = "STOP_ALARM"
+        }
+        sendBroadcast(intent)
+
+        // Clear the reference to the alarm manager
+        alarmMgr = null
+    }
+
 }

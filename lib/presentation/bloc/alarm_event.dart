@@ -9,3 +9,5 @@ class AlarmSetAlarmEvent extends AlarmEvent {
 }
 
 class AlarmGetAlarmEvent extends AlarmEvent {}
+
+class AlarmStopAlarmEvent extends AlarmEvent {}

@@ -19,7 +19,8 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => AlarmBloc(setAlarm: getIt(), getAlarm: getIt())
+          create: (_) => AlarmBloc(
+              setAlarm: getIt(), getAlarm: getIt(), stopAlarm: getIt())
             ..add(AlarmGetAlarmEvent()),
         ),
       ],

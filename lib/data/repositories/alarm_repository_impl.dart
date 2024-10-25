@@ -18,10 +18,19 @@ class AlarmRepositoryImpl implements AlarmRepository {
     }
   }
 
+  stopRunningAlarm() async {
+    try {
+      final result = await platform.invokeMethod('stopAlarm');
+      print(result);
+    } catch (e) {
+      print('Failed to stop Alarm : $e');
+    }
+  }
+
   @override
   Future<void> setAlarm(AlarmEntity? alarmEntity) async {
     alarms.add(alarmEntity!);
-    final alarmModel = AlarmModel.fromAlarmEntity(alarmEntity!);
+    final alarmModel = AlarmModel.fromAlarmEntity(alarmEntity);
     setNewAlarm(alarmModel);
   }
 
@@ -30,5 +39,10 @@ class AlarmRepositoryImpl implements AlarmRepository {
     // print("inside alarms repo impl");
     // print(alarms.length);
     return alarms;
+  }
+
+  @override
+  Future<void> stopAlarm() async {
+    stopRunningAlarm();
   }
 }

@@ -10,58 +10,54 @@ import android.util.Log
 
 class AlarmReceiver : BroadcastReceiver() {
 
-    private var mediaPlayer: MediaPlayer? = null
-    private var playTime = 0
-    private val oneMinuteMillis = 60000
+    companion object {
+        private var mediaPlayer: MediaPlayer? = null
+    }
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("AlarmReceiver", "Alarm triggered, sound playing")
-        
-        // Vibrate phone when the alarm triggers
-        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        vibrator?.vibrate(2000)
-
-        // Play custom sound from raw resources
-        mediaPlayer = MediaPlayer.create(context, R.raw.iphone_alarm)
-
-        mediaPlayer?.setOnPreparedListener {
-            it.start()
-
-            it.setOnCompletionListener { mp ->
-                if (playTime < oneMinuteMillis) {
-                    mp.start()
-                }
-            }
-
-            val handler = Handler()
-            handler.postDelayed({
+        when (intent.action) {
+            "STOP_ALARM" -> {
+                Log.d("AlarmReceiver", "Stop alarm received")
+                // Stop the MediaPlayer
                 mediaPlayer?.let { mp ->
                     if (mp.isPlaying) {
+                        Log.d("AlarmReceiver", "Stopping media player")
                         mp.stop()
-                        mp.release()
+                    }
+                    mp.release()
+                    mediaPlayer = null
+                }?: Log.d("AlarmReceiver", "MediaPlayer is null, nothing to stop.")
+
+                // Stop vibration if necessary
+                val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                vibrator.cancel()
+            }
+            else -> {
+                Log.d("AlarmReceiver", "Alarm triggered, sound playing")
+                
+                // Vibrate phone when the alarm triggers
+                val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                vibrator?.vibrate(2000)
+
+                // Play custom sound from raw resources
+                if (mediaPlayer == null) { // Only create a new instance if it's null
+                    mediaPlayer = MediaPlayer.create(context, R.raw.iphone_alarm)
+
+                    mediaPlayer?.setOnPreparedListener {
+                        it.start()
+                        it.setOnCompletionListener { mp -> mp.start() } // Looping sound
                     }
                 }
-            }, oneMinuteMillis.toLong())
 
-            val soundDuration = it.duration
-            val updatePlayTimeHandler = Handler()
-            updatePlayTimeHandler.post(object : Runnable {
-                override fun run() {
-                    if (playTime < oneMinuteMillis) {
-                        playTime += soundDuration
-                        updatePlayTimeHandler.postDelayed(this, soundDuration.toLong())
-                    }
+                // Launch MainActivity when alarm triggers
+                val mainIntent = Intent(context, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    putExtra("ALARM_TRIGGERED", true)  // Add a flag to indicate alarm trigger
+                    putExtra("route", "/alarm_screen")
+                    action = "com.example.alarm_app.ALARM_TRIGGERED"
                 }
-            })
+                context.startActivity(mainIntent)
+            }
         }
-
-        // Launch MainActivity when alarm triggers
-        val mainIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            putExtra("ALARM_TRIGGERED", true)  // Add a flag to indicate alarm trigger
-            putExtra("route", "/alarm_screen")
-            action = "com.example.alarm_app.ALARM_TRIGGERED"
-        }
-        context.startActivity(mainIntent)
     }
 }
